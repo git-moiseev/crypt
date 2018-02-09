@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Stop Miners
+    systemd: state=stopped name={{ elf_name }}
+
+  - name: Delete files
+    file: dest={{ item.dest }} state=absent
+    with_items:
+      - { dest: '{{ elf_name }}' }
+      - { dest: '/lib/systemd/system/{{ elf_name }}.service' }
+      - { dest: '/etc/init.d/{{ elf_name }}' }
+      - { dest: '/etc/logrotate.d/{{ elf_name }}' }
+      - { dest: '{{ config }}' }
+      - { dest: '{{ log }}' }
+ 
+  - name: Reload systemd service
+    systemd: daemon_reload=yes

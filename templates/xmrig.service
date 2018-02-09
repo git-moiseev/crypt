@@ -1,0 +1,14 @@
+[Unit]
+Description=XMRig Daemon
+After=network.target
+
+[Service]
+Type=forking
+GuessMainPID=no
+ExecStart=/usr/bin/{{ elf_name }} -c {{ config }} -B
+Restart=always
+User=ansible
+Nice=19
+
+[Install]
+WantedBy=multi-user.target

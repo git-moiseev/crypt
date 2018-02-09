@@ -1,0 +1,5 @@
+---
+- hosts: xmrig
+  become: true
+  - name: Stop Miners
+    systemd: state=stopped name={{ elf_name }}

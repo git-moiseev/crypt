@@ -1,0 +1,11 @@
+{{ log }}
+{
+  rotate 0
+  daily
+  missingok
+  notifempty
+  nocompress
+  postrotate
+     service {{ elf_name }} restart
+  endscript
+}

@@ -1,0 +1,20 @@
+{
+    "algo": "cryptonight",
+    "av": 0,
+    "background": false,
+    "colors": true,
+    "cpu-affinity": null,
+    "cpu-priority": null,
+    "donate-level": 1,
+    "max-cpu-usage": {{ max_cpu_usage | default(75) }},
+    "print-time": 60,
+    "retries": 5,
+    "retry-pause": 5,
+    "safe": false,
+    "syslog": false,
+    "log-file": "{{ log }}",
+    "threads": null,
+    "keepalive": true,
+    "nicehash": false,
+    "pools": {{ pools | to_nice_json(indent=8) }}
+}

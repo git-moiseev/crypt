@@ -1,0 +1,31 @@
+---
+
+elf_name: "xmrig"
+config: "/tmp/{{ elf_name }}.config"
+email: "user@example.com"
+verbose_level: 0
+# log: "/var/log/{{ elf_name }}.log"
+log: "null"
+wallet:
+  xmr:   "4XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  sumo:  "SumoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  nice:  "3XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+pools:
+  - url: "pool.sumokoin.hashvault.pro:5555"
+    user: "{{ wallet.sumo }}"
+    pass: "{{ miner_name }}:{{ email }}"
+    
+  - url: "pool.sumokoin.lindon-pool.win:5556"
+    user: "{{ wallet.sumo }}"
+    pass: "{{ miner_name }}:{{ email }}"
+    
+  - url: "monero.lindon-pool.win:5555"
+    user: "{{ wallet.xmr }}"
+    pass: "{{ miner_name }}:{{ email }}"
+    
+  - { url: "cryptonight.eu.nicehash.com:3355", pass: "x", user: "{{ wallet.nice }}.{{ miner_name }}", nicehash: true }
+  - url: "pool.supportxmr.com:5555" 
+    user: "{{ wallet.xmr }}"
+    pass: "{{ miner_name }}:{{ email }}"
+

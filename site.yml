@@ -1,0 +1,64 @@
+---
+- hosts: all
+  become: true
+#  gather_facts: False
+  tasks:
+#  - name: Set hostname
+#    hostname: name='localhost'
+
+  - name: Copy files
+    copy: src={{ item.src }} dest={{ item.dest }} mode={{ item.mode }}
+    with_items:
+      - { src: '{{ ansible_distribution }}-{{ ansible_distribution_major_version}}-xmrig', dest: '/usr/bin/{{ elf_name }}', mode: '0755' }
+
+  - name: Set logrotate
+    template: src=logrotate dest=/etc/logrotate.d/{{ elf_name }}
+
+  - name: Set HUGE PAGES
+    sysctl: name=vm.nr_hugepages value=128 sysctl_set=yes state=present reload=yes 
+
+- hosts: xmrig
+  become: true
+  gather_facts: False
+  tasks:
+  - name: Create config
+    template: src={{ item.src }} dest={{ item.dest }} mode=0600 owner=ansible
+    with_items:
+      - { src: 'config.json',  dest: '{{ config }}' }
+      - { src: 'xmrig.service', dest: '/lib/systemd/system/{{ elf_name }}.service' }
+    notify:
+    - restart miner
+
+  handlers:
+  - name: restart miner 
+    systemd: state=restarted name={{ elf_name }}
+
+- hosts: xmr-stack
+  become: true
+  tasks:
+  - name: Change limits
+    lineinfile: dest='/etc/security/limits.conf' line={{ item }}
+    with_items:
+      - '*      soft    memlock         262144'
+      - '*      hard    memlock         262144' 
+
+  - name: Create config
+    template: src={{ item.src }} dest={{ item.dest }} mode={{ item.mode }} owner=ansible
+    with_items:
+      - { src: 'config-xmr.json',  dest: '{{ config }}', mode: '0600' }
+      - { src: 'xmr-stak-cpu.service', dest: '/etc/init.d/{{ elf_name }}', mode: '0700' }
+    notify:
+    - restart miner
+
+  handlers:
+  - name: restart miner 
+    service: state=restarted name={{ elf_name }}
+
+- hosts: all
+  become: true
+  gather_facts: False
+  tasks:
+
+  - name: Start Miners
+    service: state=started name={{ elf_name }}
+
