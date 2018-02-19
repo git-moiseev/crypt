@@ -1,0 +1,7 @@
+---
+- hosts: all
+  gather_facts: False
+  become: true
+  tasks:
+  - name: Start Miners
+    service: state=started name={{ elf_name }}

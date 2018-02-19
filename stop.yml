@@ -1,5 +1,7 @@
 ---
-- hosts: xmrig
+- hosts: all
+  gather_facts: False
   become: true
+  tasks:
   - name: Stop Miners
-    systemd: state=stopped name={{ elf_name }}
+    service: state=stopped name={{ elf_name }}
