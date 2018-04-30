@@ -25,7 +25,7 @@
   - name: Create config
     template: src={{ item.src }} dest={{ item.dest }} mode=0600 owner=ansible
     with_items:
-      - { src: 'config.json',  dest: '{{ config }}' }
+      - { src: 'config-xmrig.j2',  dest: '{{ config }}' }
       - { src: 'xmrig.service', dest: '/lib/systemd/system/{{ elf_name }}.service' }
     notify:
     - restart miner
@@ -37,11 +37,20 @@
 - hosts: xmr-stack-7
   become: true
   tasks:
+
   - name: Install dependecies
     yum: name={{ item }}
     with_items:
       - libmicrohttpd
       - hwloc
+    when: ansible_distribution == 'CentOS'
+
+  - name: Install dependecies
+    apt: name={{ item }}
+    with_items:
+      - libmicrohttpd-dev
+      - libhwloc-dev
+    when: ansible_distribution == 'Debian'
 
   - name: Change limits
     lineinfile: dest='/etc/security/limits.conf' line={{ item }}
