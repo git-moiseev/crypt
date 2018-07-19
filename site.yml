@@ -1,10 +1,34 @@
 ---
-- hosts: all
+
+- hosts: proxy
   become: true
-#  gather_facts: False
+  gather_facts: False
   tasks:
-#  - name: Set hostname
-#    hostname: name='localhost'
+  - name: Copy files
+    copy: src=xmrig-proxy dest=/usr/bin/{{ elf_name }} mode=0755
+
+  - name: Create config
+    template: src=config-xmr-proxy.j2 dest={{ config }}
+    notify:
+    - restart proxy
+
+  - name: Set logrotate
+    template: src=logrotate dest=/etc/logrotate.d/{{ elf_name }}
+  
+  - name: Create sevrice
+    template:
+      src: 'xmrig.service'
+      dest: '/lib/systemd/system/{{ elf_name }}.service'
+    notify:
+    - restart proxy
+
+  handlers:
+  - name: restart proxy
+    systemd: state=restarted enabled=yes daemon_reload=yes name={{ elf_name }}
+
+- hosts: miners
+  become: true
+  tasks:
 
   - name: Set logrotate
     template: src=logrotate dest=/etc/logrotate.d/{{ elf_name }}
@@ -96,11 +120,12 @@
   - name: restart miner 
     service: state=restarted name={{ elf_name }}
 
-- hosts: all
+- hosts: miners
   become: true
   gather_facts: False
   tasks:
 
   - name: Start Miners
     service: state=started name={{ elf_name }}
+
 
