@@ -9,8 +9,8 @@
 
   - name: Create config
     template: src=config-xmr-proxy.j2 dest={{ config }}
-    notify:
-    - restart proxy
+#    notify:
+#    - restart proxy
 
   - name: Set logrotate
     template: src=logrotate dest=/etc/logrotate.d/{{ elf_name }}
