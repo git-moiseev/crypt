@@ -1,0 +1,4 @@
+---
+
+- name: restart elf
+  service: state=restarted name={{ elf_name }}

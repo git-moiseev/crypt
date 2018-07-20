@@ -1,0 +1,51 @@
+---
+
+- hosts: proxy
+  become: true
+  gather_facts: False
+  tasks:
+  - name: Copy files
+    copy: src=xmrig-proxy dest=/usr/bin/{{ elf_name }} mode=0755
+
+  - name: Create config
+    template: src=config-xmr-proxy.j2 dest={{ config }}
+#
+#    notify:
+#    - restart proxy
+#    xmrig-proxy reload config automaticaly
+#
+
+- hosts: xmrig
+  become: true
+  gather_facts: False
+  tasks:
+  - name: Create config
+    template: src={{ item.src }} dest={{ item.dest }} mode=0600 owner=ansible
+    with_items:
+      - { src: 'config-xmrig.j2',  dest: '{{ config }}' }
+    notify:
+    - restart elf
+
+- hosts: xmr-stack-7
+  become: true
+  tasks:
+
+  - name: Create config
+    template: src={{ item.src }} dest={{ item.dest }} mode={{ item.mode }} owner=ansible
+    with_items:
+      - { src: 'config-xmr-7.j2',  dest: '{{ config }}', mode: '0600' }
+    notify:
+    - restart elf
+
+- hosts: xmr-stack
+  become: true
+  tasks:
+
+  - name: Create config
+    template: src={{ item.src }} dest={{ item.dest }} mode={{ item.mode }} owner=ansible
+    with_items:
+      - { src: 'config-xmr.json',  dest: '{{ config }}', mode: '0600' }
+    notify:
+    - restart elf
+
+
