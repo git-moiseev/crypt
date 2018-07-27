@@ -19,10 +19,10 @@
     "retry-pause": 1,
     "reuse-timeout": 0,
     "user-agent": null,
-    "verbose": false,
+    "verbose": {{ verbose }},
     "watch": true,
     "workers": true,
     "background": false,
     "log-file": "{{ log }}",
-    "pools": {{ pools | to_nice_json(indent=8) }}
+    "pools": {{ pools | to_nice_json(indent=2) }}
 }
