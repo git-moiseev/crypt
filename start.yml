@@ -1,5 +1,12 @@
 ---
-- hosts: all
+- hosts: proxy
+  gather_facts: False
+  become: true
+  tasks:
+  - name: Start Proxy
+    service: state=started name={{ elf_name }}
+
+- hosts: miners
   gather_facts: False
   become: true
   tasks:

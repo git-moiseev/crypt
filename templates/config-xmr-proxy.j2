@@ -1,6 +1,6 @@
 {
     "access-log-file": null,
-    "algo": "{{  pools.0.algo|default('cryptonight') }}",
+    "algo": "cryptonight",
     "api": {
         "port": 0,
         "access-token": null,
@@ -8,21 +8,18 @@
         "ipv6": false,
         "restricted": true
     },
+    "background": false,
     "bind": [
         "0.0.0.0:3333"
     ],
     "colors": true,
-    "custom-diff": 0,
-    "donate-level": 0,
+    "donate-level": 1,
+    "log-file": "{{ log }}",
     "mode": "nicehash",
     "retries": 2,
     "retry-pause": 1,
-    "reuse-timeout": 0,
-    "user-agent": null,
-    "verbose": {{ verbose }},
-    "watch": true,
-    "workers": true,
-    "background": false,
-    "log-file": "{{ log }}",
+    "syslog": false,
+    "verbose": {{ verbose_level | lower }},
+    "workers": "password",
     "pools": {{ pools | to_nice_json(indent=2) }}
 }
